@@ -1,5 +1,7 @@
 package books.microservice;
 
+import java.util.Arrays;
+
 public class Book {
 
 	private String ISBN;
@@ -13,11 +15,11 @@ public class Book {
 	}
 
 	public String getISBN() {
-		return ISBN;
+		return this.ISBN;
 	}
 
 	public void setISBN(String iSBN) {
-		ISBN = iSBN;
+		this.ISBN = iSBN;
 	}
 
 	public String getTitle() {
@@ -59,6 +61,14 @@ public class Book {
 	public void setRating(int rating) {
 		this.rating = rating;
 	}
+
+	@Override
+	public String toString() {
+		return "Book [ISBN=" + ISBN + ", title=" + title + ", authors=" + Arrays.toString(authors) + ", publisher="
+				+ publisher + ", publishedYear=" + publishedYear + ", rating=" + rating + "]";
+	}
+	
+	
 	
 	
 }
