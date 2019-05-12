@@ -1,0 +1,40 @@
+plugins {
+	id 'org.springframework.boot' version '2.1.4.RELEASE'
+	id 'java'
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+group = 'ac.afeka.cloud.sabina'
+version = '0.0.1'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+}
+
+// exclude tomcat dependencies
+configurations {
+	implementation.exclude module: 'spring-boot-starter-tomcat'
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+	// netty support - default webflux implementation server, assuming tomcat is excluded
+
+	// jetty support
+	//implementation  'org.springframework.boot:spring-boot-starter-jetty'
+
+	// undertow support
+	//implementation  'org.springframework.boot:spring-boot-starter-undertow'
+
+	implementation 'org.springframework.boot:spring-boot-starter-test'
+
+	implementation 'io.projectreactor:reactor-test'
+}
+
