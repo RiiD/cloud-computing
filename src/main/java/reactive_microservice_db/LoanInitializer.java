@@ -3,9 +3,6 @@ package reactive_microservice_db;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Flux;
-
-import java.util.stream.Stream;
 
 @Component
 public class LoanInitializer implements CommandLineRunner {

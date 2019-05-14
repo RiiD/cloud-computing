@@ -1,7 +1,5 @@
 package reactive_microservice_db;
 
-import org.springframework.data.annotation.Id;
-
 public class Reader {
 
 

@@ -1,7 +1,6 @@
 package reactive_microservice_db;
 
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.BodyInserter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
