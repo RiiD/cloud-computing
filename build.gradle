@@ -24,6 +24,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	compile group: 'org.springframework.kafka', name: 'spring-kafka', version: '2.1.0.RELEASE'
 
 	// netty support - default webflux implementation server, assuming tomcat is excluded
 

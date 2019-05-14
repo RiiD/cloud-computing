@@ -76,18 +76,6 @@ public class Loan {
             throw new RuntimeException("no class");
         }
     }
-
-
-//    @Override
-//    public String toString() {
-//        return "Loan{" +
-//                "loanId='" + loanId + '\'' +
-//                ", isbn='" + isbn + '\'' +
-//                ", reader=" + reader +
-//                ", loanDate=" + loanDate +
-//                ", returnDate=" + returnDate +
-//                '}';
-//    }
 }
 
 
