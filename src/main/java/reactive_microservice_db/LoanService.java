@@ -9,4 +9,6 @@ public interface LoanService {
     public Mono<Loan> getByKey(String loanId);
     public Flux<Loan> getAll();
     public Mono<Void> deleteAll();
+    public Mono<Loan> track(String loanId);
+    public Mono<Void> returnBook(String loanId);
 }
