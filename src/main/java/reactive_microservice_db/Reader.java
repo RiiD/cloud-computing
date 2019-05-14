@@ -1,8 +1,6 @@
 package reactive_microservice_db;
 
 public class Reader {
-
-
     private String id;
     private String email;
     private String firstName;
