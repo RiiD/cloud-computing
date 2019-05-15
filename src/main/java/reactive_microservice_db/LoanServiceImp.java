@@ -60,13 +60,21 @@ public class LoanServiceImp implements LoanService {
     
     @Override
     public Mono<Loan> track(String loanId) {
-    	return kafkaService
-    			.<String, String>getReceiverFor(loanId)
-    			.log()
-    			.take(1)
-    			.single()
-    			.doOnNext(r -> r.receiverOffset().acknowledge())
-    			.then(this.loansDao.findById(loanId));
+    	return loansDao
+    			.findById(loanId)
+    			.flatMap(l -> {
+    				if (l.getReturnDate() == null) {
+    					return kafkaService
+    			    			.<String, String>getReceiverFor(loanId)
+    			    			.log()
+    			    			.take(1)
+    			    			.single()
+    			    			.doOnNext(r -> r.receiverOffset().acknowledge())
+    			    			.then(this.loansDao.findById(loanId));
+    				} else {
+    					return Mono.just(l);
+    				}
+    			});
     }
     
     @Override
