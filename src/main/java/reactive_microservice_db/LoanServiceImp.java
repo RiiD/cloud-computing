@@ -12,7 +12,6 @@ import reactor.kafka.sender.SenderRecord;
 
 @Service
 public class LoanServiceImp implements LoanService {
-
     private LoansDao loansDao;
     private KafkaServiceInterface kafkaService;
 
@@ -21,25 +20,7 @@ public class LoanServiceImp implements LoanService {
         this.loansDao = loansDao;
         this.kafkaService = kafkaService;
     }
-
-    @Override
-    public Mono<Loan> store(Loan loan) {
-        if (loan.getLoanId() != null) {
-            return
-                    this.loansDao.existsById(loan.getLoanId())
-                            .flatMap(bool->{
-                                if (!bool) {
-                                    return this.loansDao.save(loan);
-                                }else{
-                                    throw new RuntimeException("loan already exists with key");
-                                }
-                            });
-        }else {
-            return this.loansDao.save(loan);
-        }
-
-    }
-
+    
     @Override
     public Mono<Loan> getByKey(String loanId) {
         return this.loansDao
@@ -95,5 +76,11 @@ public class LoanServiceImp implements LoanService {
 	    		return Mono.just(l);
 	    	})
 	    	.then();
+    }
+    
+    @Override
+    public Mono<Loan> create(String isbn, Reader reader) {
+    	Loan loan = new Loan(isbn, reader);
+    	return loansDao.insert(loan);
     }
 }

@@ -1,5 +1,7 @@
 package reactive_microservice_db;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,9 +18,6 @@ import reactor.core.publisher.Mono;
 
 @RestController
 public class LoanController {
-
-    private static final int MAX_ISBN_LENGTH = 13;
-    private static final int MIN_ISBN_LENGTH = 10;
     private LoanService loanService;
 
     @Autowired
@@ -27,20 +26,14 @@ public class LoanController {
     }
 
     @RequestMapping(
-            path="/loans/{isbn}",
-            method = RequestMethod.POST,
-            consumes= MediaType.APPLICATION_JSON_VALUE,
+            path="/loans/{isbn:^\\d{10}|\\d{13}$}",
+            method=RequestMethod.POST,
+            consumes=MediaType.APPLICATION_JSON_VALUE,
             produces=MediaType.APPLICATION_JSON_VALUE)
-    public Mono<Loan> store(
-            @PathVariable("isbn") int isbn,
-            @RequestBody  Loan newLoan) throws InvalidParamException {
-        if(isIsbnValid(isbn)){
-            return this.loanService
-                        .store(newLoan);
-        }
-        else{
-            throw new InvalidParamException("isbn is invalid");
-        }
+    public Mono<Loan> create(
+    		@PathVariable("isbn") String isbn,
+            @Valid @RequestBody Reader reader) {
+    	return this.loanService.create(isbn, reader);
     }
     
     @RequestMapping(
@@ -86,21 +79,16 @@ public class LoanController {
     public Mono<Loan> track(@PathVariable("loanId") String loanId){
         return this.loanService.track(loanId);
     }
-
-    @ExceptionHandler
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorMessage handleException(InvalidParamException e) {
-        e.printStackTrace();
-        return new ErrorMessage(e.getMessage());
-    }
     
     @ExceptionHandler
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ErrorMessage handleException(NotFoundException e) {
         return new ErrorMessage(e.getMessage());
     }
-
-    private boolean isIsbnValid(int isbnLength) {
-        return (isbnLength == MAX_ISBN_LENGTH || isbnLength == MIN_ISBN_LENGTH);
+    
+    @ExceptionHandler
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessage handleException(InvalidParamException e) {
+        return new ErrorMessage(e.getMessage());
     }
 }

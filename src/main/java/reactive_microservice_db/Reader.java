@@ -1,9 +1,21 @@
 package reactive_microservice_db;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+
 public class Reader {
+	
+	@NotBlank
     private String id;
+    
+    @NotBlank
+    @Email(message="Invalid email")
     private String email;
+    
+    @NotBlank
     private String firstName;
+    
+    @NotBlank
     private String lastName;
 
     public Reader() {
