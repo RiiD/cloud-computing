@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -51,7 +52,6 @@ public class LoanController {
     public Mono<Loan> getByKey(@PathVariable("loanId") String loanId){
         return this.loanService
                 .getByKey(loanId);
-
     }
 
     @RequestMapping(
@@ -61,6 +61,26 @@ public class LoanController {
     public Flux<Loan> getAll(){
         return this.loanService
                 .getAll();
+    }
+    
+    @RequestMapping(
+            path="/loans",
+            method = RequestMethod.GET,
+            params = "byIsbn",
+            produces=MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<Loan> getbyIsbn(@RequestParam(name = "byIsbn", required = true)  String isbn){
+        return this.loanService
+                .getbyIsbn(isbn);
+    }
+    
+    @RequestMapping(
+            path="/loans",
+            method = RequestMethod.GET,
+            params = "status",
+            produces=MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<Loan> getReturned(@RequestParam(name = "status", required = true) String status){
+        return this.loanService
+                .getReturned(status);
     }
 
     @RequestMapping(

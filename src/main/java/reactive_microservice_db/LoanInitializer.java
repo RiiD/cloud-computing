@@ -24,11 +24,11 @@ public class LoanInitializer implements CommandLineRunner {
 
         Reader reader = new Reader("11","o@gmail.com","cloud","course");
 
-        loanService.create("100010001000", reader)
+        loanService.create("1000100010001", reader)
                 .subscribe(System.err:: println);
 
 
-        loanService.create("100010001001", reader)
+        loanService.create("1000100010011", reader)
                 .subscribe(System.err:: println);
 
 

@@ -33,6 +33,32 @@ public class LoanServiceImp implements LoanService {
         return this.loansDao
                 .findAll();
     }
+    
+    @Override
+    public Flux<Loan> getbyIsbn(String isbn) {
+    	if (isbn.length() == 13 || isbn.length() == 10) {
+            return this.loansDao
+                    .findAllByIsbn(isbn)
+                    .switchIfEmpty(Mono.error(new NotFoundException()));
+    	}
+    	else
+    	{
+			throw new RuntimeException("isbn not legal");
+    	}
+    }
+    
+	@Override
+	public Flux<Loan> getReturned(String status) {
+		if (status.equals("returned")){
+	        return this.loansDao
+	                .findAllByReturnDateIsNotNull()
+	                .switchIfEmpty(Mono.error(new NotFoundException()));
+		}
+		else
+		{
+			throw new RuntimeException("status not legal");
+		}
+	}
 
     @Override
     public Mono<Void> deleteAll() {
