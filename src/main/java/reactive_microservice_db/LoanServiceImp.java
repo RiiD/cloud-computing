@@ -43,7 +43,8 @@ public class LoanServiceImp implements LoanService {
     @Override
     public Mono<Loan> getByKey(String loanId) {
         return this.loansDao
-                .findById(loanId);
+                .findById(loanId)
+                .switchIfEmpty(Mono.error(new NotFoundException()));
     }
 
     @Override
@@ -60,8 +61,7 @@ public class LoanServiceImp implements LoanService {
     
     @Override
     public Mono<Loan> track(String loanId) {
-    	return loansDao
-    			.findById(loanId)
+    	return getByKey(loanId)
     			.flatMap(l -> {
     				if (l.getReturnDate() == null) {
     					return kafkaService
@@ -70,7 +70,7 @@ public class LoanServiceImp implements LoanService {
     			    			.take(1)
     			    			.single()
     			    			.doOnNext(r -> r.receiverOffset().acknowledge())
-    			    			.then(this.loansDao.findById(loanId));
+    			    			.then(getByKey(loanId));
     				} else {
     					return Mono.just(l);
     				}
@@ -79,9 +79,7 @@ public class LoanServiceImp implements LoanService {
     
     @Override
     public Mono<Void> returnBook(String loanId) {
-    	return this
-	    	.loansDao
-	    	.findById(loanId)
+    	return getByKey(loanId)
 	    	.flatMap(l -> {
 	    		if (l.getReturnDate() == null) {
 	    			l.setReturnDate(new Date());

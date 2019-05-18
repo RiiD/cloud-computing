@@ -93,6 +93,12 @@ public class LoanController {
         e.printStackTrace();
         return new ErrorMessage(e.getMessage());
     }
+    
+    @ExceptionHandler
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public ErrorMessage handleException(NotFoundException e) {
+        return new ErrorMessage(e.getMessage());
+    }
 
     private boolean isIsbnValid(int isbnLength) {
         return (isbnLength == MAX_ISBN_LENGTH || isbnLength == MIN_ISBN_LENGTH);
