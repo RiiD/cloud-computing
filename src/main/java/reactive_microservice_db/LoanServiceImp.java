@@ -1,6 +1,8 @@
 package reactive_microservice_db;
 
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,10 @@ import reactor.kafka.sender.SenderRecord;
 public class LoanServiceImp implements LoanService {
     private LoansDao loansDao;
     private KafkaServiceInterface kafkaService;
+
+	private static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+			Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+	private static final String DIGIT_REGEX = "\\d+";
 
     @Autowired
     public LoanServiceImp(LoansDao loansDao, KafkaServiceInterface kafkaService) {
@@ -103,10 +109,44 @@ public class LoanServiceImp implements LoanService {
 	    	})
 	    	.then();
     }
-    
-    @Override
+
+	@Override
+	public Flux<Loan> loanByEmail(String email) {
+    	if(validateEmailAddress(email)){
+			return this.loansDao.findAllByReader_email(email);
+		}
+		else{
+			throw new RuntimeException("invalid Email Address");
+		}
+	}
+
+	@Override
+	public Flux<Loan> betweenDates(Date fromDate, Date toDate) {
+		return this.loansDao.findByLoanDateBetween(fromDate, toDate);
+	}
+
+	@Override
     public Mono<Loan> create(String isbn, Reader reader) {
-    	Loan loan = new Loan(isbn, reader);
-    	return loansDao.insert(loan);
+		if(isReaderValid(reader)){
+			Loan loan = new Loan(isbn,reader);
+			return this.loansDao.save(loan);
+		}
+		else{
+			throw new RuntimeException("isbn/reader is invalid");
+		}
     }
+
+	private boolean isReaderValid(Reader reader) {
+		return reader.getId().trim().matches(DIGIT_REGEX) &&
+				validateEmailAddress(reader.getEmail()) &&
+				reader.getFirstName() !=null &&
+				reader.getLastName() != null ;
+
+
+	}
+
+	public  boolean validateEmailAddress(String emailStr) {
+		Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(emailStr);
+		return matcher.find();
+	}
 }

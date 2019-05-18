@@ -1,5 +1,6 @@
 package reactive_microservice_db;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.data.annotation.Id;
@@ -14,6 +15,7 @@ public class Loan {
     private String loanId;
     private String isbn;
     private Reader reader;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Jerusalem")
     private Date loanDate;
     private Date returnDate;
 

@@ -3,6 +3,7 @@ package reactive_microservice_db;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.Date;
 
 @RestController
 public class LoanController {
@@ -99,6 +102,27 @@ public class LoanController {
     public Mono<Loan> track(@PathVariable("loanId") String loanId){
         return this.loanService.track(loanId);
     }
+
+
+    @RequestMapping(
+            path="loans?byReader={email}",
+            method = RequestMethod.GET,
+            produces=MediaType.APPLICATION_JSON_VALUE)
+    public Flux<Loan> loansByEmail(@PathVariable("email") String email){
+        return this.loanService.loanByEmail(email);
+    }
+
+    @RequestMapping(
+            path="/loans",
+            params= {"fromDate","toDate"},
+            produces=MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<Loan> getLoansInDateRange(
+            @RequestParam(name="fromDate", required=true) @DateTimeFormat(iso=DateTimeFormat.ISO.DATE) Date fromDate,
+            @RequestParam(name="toDate", required=true) @DateTimeFormat(iso=DateTimeFormat.ISO.DATE) Date toDate){
+
+        return this.loanService.betweenDates(fromDate, toDate);
+    }
+
     
     @ExceptionHandler
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
