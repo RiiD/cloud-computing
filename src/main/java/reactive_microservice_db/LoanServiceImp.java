@@ -44,8 +44,7 @@ public class LoanServiceImp implements LoanService {
     public Flux<Loan> getbyIsbn(String isbn) {
     	if (isbn.length() == 13 || isbn.length() == 10) {
             return this.loansDao
-                    .findAllByIsbn(isbn)
-                    .switchIfEmpty(Mono.error(new NotFoundException()));
+                    .findAllByIsbn(isbn);
     	}
     	else
     	{
@@ -57,8 +56,7 @@ public class LoanServiceImp implements LoanService {
 	public Flux<Loan> getReturned(String status) {
 		if (status.equals("returned")){
 	        return this.loansDao
-	                .findAllByReturnDateIsNotNull()
-	                .switchIfEmpty(Mono.error(new NotFoundException()));
+	                .findAllByReturnDateIsNotNull();
 		}
 		else
 		{

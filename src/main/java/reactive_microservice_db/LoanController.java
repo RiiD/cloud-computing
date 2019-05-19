@@ -105,10 +105,11 @@ public class LoanController {
 
 
     @RequestMapping(
-            path="loans?byReader={email}",
+    		path="/loans",
             method = RequestMethod.GET,
-            produces=MediaType.APPLICATION_JSON_VALUE)
-    public Flux<Loan> loansByEmail(@PathVariable("email") String email){
+            params = "byReader",
+            produces=MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<Loan> loansByEmail(@RequestParam(name = "byReader", required = true) String email){
         return this.loanService.loanByEmail(email);
     }
 
@@ -123,16 +124,5 @@ public class LoanController {
         return this.loanService.betweenDates(fromDate, toDate);
     }
 
-    
-    @ExceptionHandler
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ErrorMessage handleException(NotFoundException e) {
-        return new ErrorMessage(e.getMessage());
-    }
-    
-    @ExceptionHandler
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorMessage handleException(InvalidParamException e) {
-        return new ErrorMessage(e.getMessage());
-    }
+   
 }

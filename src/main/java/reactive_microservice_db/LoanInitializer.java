@@ -33,6 +33,9 @@ public class LoanInitializer implements CommandLineRunner {
 
         loanService.create("1000100010001", reader1)
                 .subscribe(System.err:: println);
+        
+        loanService.create("1000100010001", reader2)
+        	.subscribe(System.err:: println);
 
         loanService.create("1000100010012", reader1)
                 .subscribe(System.err:: println);
